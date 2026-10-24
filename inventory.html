@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Inventory | Smart Pantry</title>
+  
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout">
+    
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR NAVIGATION                                           -->
+    <!-- ============================================================ -->
+    <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+      <!-- Brand & Tagline -->
+      <div class="brand-container">
+        <div class="brand-logo">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Smart Pantry</h1>
+          <p class="brand-tagline">Less Waste, More Taste.</p>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation sidebar">&times;</button>
+      </div>
+
+      <!-- Navigation Links (Food Inventory Active) -->
+      <nav class="nav-menu">
+        <p class="nav-label">MENU</p>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-btn" id="navDashboard">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="7" height="9" x="3" y="3" rx="1"/>
+                <rect width="7" height="5" x="14" y="3" rx="1"/>
+                <rect width="7" height="9" x="14" y="12" rx="1"/>
+                <rect width="7" height="5" x="3" y="16" rx="1"/>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="inventory.html" class="nav-btn active" id="navInventory">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m7.5 4.27 9 5.15"/>
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                <path d="m3.3 7 8.7 5 8.7-5"/>
+                <path d="M12 22V12"/>
+              </svg>
+              <span>Food Inventory</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="recipes.html" class="nav-btn" id="navRecipes">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/>
+                <path d="M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                <path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                <path d="M17 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                <path d="M4 12h16"/>
+              </svg>
+              <span>Recipe Suggestions</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freshness.html" class="nav-btn" id="navFreshness">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <circle cx="10" cy="13" r="2"/>
+                <path d="m20 17-1.09-1.09a2 2 0 0 0-2.82 0L10 22"/>
+              </svg>
+              <span>Freshness Check</span>
+              <span class="badge-pill">AI</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="fridge.html" class="nav-btn" id="navFridge">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/>
+                <path d="M3 10h18"/>
+                <path d="M7 6v2"/>
+                <path d="M7 14v4"/>
+              </svg>
+              <span>Fridge Monitoring</span>
+              <span class="badge-pill iot">IoT</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="iot-status-indicator">
+          <span class="status-dot online"></span>
+          <div class="iot-status-info">
+            <span class="iot-status-title">Smart Fridge Hub</span>
+            <span class="iot-status-sub">[Simulated IoT Online]</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT AREA                                            -->
+    <!-- ============================================================ -->
+    <div class="main-wrapper">
+      
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle navigation menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          
+          <div class="header-title-group">
+            <h2 class="page-heading">Food Inventory</h2>
+            <p class="page-subheading">Track and manage items in your fridge, freezer, and pantry.</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Return to Dashboard Link -->
+          <a href="index.html" class="btn-back-dashboard">
+            &larr; Back to Dashboard
+          </a>
+
+          <!-- Add Item Button -->
+          <button class="btn btn-primary" id="btnOpenAddModal">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Food Item</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Body Container -->
+      <main class="content-body">
+        
+        <div class="inventory-container">
+          
+          <!-- Shared Data Notice for Teammates -->
+          <div class="storage-notice-banner">
+            <span>💡</span>
+            <div>
+              <strong>Browser Storage Notice:</strong> Items added, edited, or deleted are saved in this browser's <code>localStorage</code>. Data persists across these pages locally, but is not automatically synchronized across other teammates' devices.
+            </div>
+          </div>
+
+          <!-- Controls Bar: Search & Category Filter -->
+          <div class="table-controls-bar">
+            <div class="search-filter-box">
+              <input type="text" id="inventorySearch" class="input-search" placeholder="Search by name or location (e.g., Crisper)...">
+              <select id="inventoryCategoryFilter" class="select-filter">
+                <option value="all">All Categories</option>
+                <option value="Produce">🥬 Produce</option>
+                <option value="Dairy">🥛 Dairy</option>
+                <option value="Meat">🍗 Meat</option>
+                <option value="Bakery">🍞 Bakery</option>
+                <option value="Pantry">🥫 Pantry</option>
+              </select>
+            </div>
+            <div>
+              <span style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">
+                Total Tracked: <strong id="statInventoryTotal" style="color: var(--green-600);">6</strong> items
+              </span>
+            </div>
+          </div>
+
+          <!-- Inventory Table -->
+          <div class="table-responsive">
+            <table class="inventory-table" id="inventoryTable">
+              <thead>
+                <tr>
+                  <th>Food Item</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Purchase Date</th>
+                  <th>Expiry Date</th>
+                  <th>Freshness Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody">
+                <!-- Populated dynamically via app.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </main>
+
+      <!-- Clean Footer -->
+      <footer class="app-footer">
+        <p>Smart Pantry &bull; <em>“Less Waste, More Taste.”</em> &bull; Designed for sustainable kitchens</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ADD / EDIT ITEM MODAL                                        -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="itemModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Add Food Item</h3>
+        <button class="modal-close-btn close-modal-btn" aria-label="Close dialog">&times;</button>
+      </div>
+      <form id="itemForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="inputItemName">Food Item Name *</label>
+            <input type="text" id="inputItemName" class="form-input" placeholder="e.g. Baby Spinach, Whole Milk" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputCategory">Category *</label>
+              <select id="inputCategory" class="form-select" required>
+                <option value="Produce">Produce (Vegetables & Fruits)</option>
+                <option value="Dairy">Dairy & Eggs</option>
+                <option value="Meat">Meat & Poultry</option>
+                <option value="Bakery">Bakery & Grains</option>
+                <option value="Pantry">Pantry Staples</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="inputQuantity">Quantity *</label>
+              <input type="text" id="inputQuantity" class="form-input" placeholder="e.g. 1 bag, 500g, 2 pcs" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputLocation">Storage Location</label>
+            <input type="text" id="inputLocation" class="form-input" placeholder="e.g. Crisper Drawer, Shelf 2, Door">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputPurchaseDate">Purchase Date</label>
+              <input type="date" id="inputPurchaseDate" class="form-input" value="2026-10-24">
+            </div>
+
+            <div class="form-group">
+              <label for="inputExpiryDate">Expiration Date *</label>
+              <input type="date" id="inputExpiryDate" class="form-input" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveItem">Save Food Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Shared Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
