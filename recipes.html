@@ -12,6 +12,8 @@
   
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css">
+  <!-- Recipe Suggestions module styles (all classes prefixed rs-) -->
+  <link rel="stylesheet" href="recipes.css">
 </head>
 <body>
   <!-- App Container -->
@@ -147,26 +149,72 @@
 
       <!-- Main Body Container -->
       <main class="content-body">
-        
-        <div class="recipes-container">
-          
-          <!-- Hero Banner -->
-          <div class="recipes-hero">
-            <div class="recipes-hero-text">
-              <h3>🥘 Cook With What You Have</h3>
-              <p>These recipes prioritize food currently sitting in your fridge and pantry—especially items nearing expiration.</p>
-            </div>
-            <div>
-              <span class="badge-pill" style="font-size: 0.8rem; padding: 6px 12px; background: var(--green-100); color: var(--green-800);">
-                🌿 Zero Food Waste Recipe Generator
-              </span>
-            </div>
-          </div>
 
-          <!-- Recipe Cards Grid (Populated dynamically via app.js) -->
-          <div class="recipes-grid" id="recipesGrid">
-            <!-- Dynamically populated from catalog & inventory match -->
-          </div>
+        <div class="rs-page" id="recipesPage">
+
+          <!-- Heading, subtitle and ingredient search -->
+          <section class="rs-hero" aria-labelledby="rsTitle">
+            <div>
+              <h2 class="rs-title" id="rsTitle">Recipes for Your Pantry</h2>
+              <p class="rs-subtitle">Make delicious meals with what you have. Waste less, enjoy more.</p>
+            </div>
+            <div class="rs-search" role="search">
+              <label class="rs-sr-only" for="rsSearch">Search by recipe or ingredient</label>
+              <svg class="rs-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input type="search" id="rsSearch" placeholder="Search recipes or ingredients" autocomplete="off">
+            </div>
+            <div class="rs-pantry-summary" id="rsPantrySummary" aria-live="polite"></div>
+          </section>
+
+          <!-- Filters -->
+          <section class="rs-filters" aria-label="Filter recipes">
+            <div class="rs-field">
+              <label for="rsTime">Cooking time</label>
+              <select class="rs-select" id="rsTime">
+                <option value="0">Any time</option>
+                <option value="15">15 minutes or less</option>
+                <option value="30">30 minutes or less</option>
+                <option value="60">60 minutes or less</option>
+              </select>
+            </div>
+            <div class="rs-field">
+              <label for="rsCategory">Category</label>
+              <select class="rs-select" id="rsCategory"><option value="all">All categories</option></select>
+            </div>
+            <div class="rs-field">
+              <span class="rs-field-label" id="rsAvailLabel">Ingredient availability</span>
+              <div class="rs-segment" id="rsAvail" role="group" aria-labelledby="rsAvailLabel">
+                <button type="button" data-avail="all" aria-pressed="true">All</button>
+                <button type="button" data-avail="ready" aria-pressed="false">Ready to cook</button>
+                <button type="button" data-avail="almost" aria-pressed="false">Almost ready</button>
+              </div>
+            </div>
+            <button type="button" class="rs-clear" id="rsClear" hidden>Clear filters</button>
+            <p class="rs-result-count" id="rsCount" aria-live="polite"></p>
+          </section>
+
+          <!-- Recipe sections, skeletons and empty/error states are rendered here by recipes.js -->
+          <div class="rs-content" id="rsContent" aria-busy="true"></div>
+
+          <!-- Demo-only controls. Visible only while demo data is in use. -->
+          <details class="rs-demo" id="rsDemo" hidden>
+            <summary>Demo pantry (for presentations)</summary>
+            <p class="rs-demo-note">Change the demo pantry and watch the recipes re-rank. This panel disappears once the shared inventory is connected.</p>
+            <ul class="rs-demo-list" id="rsDemoList"></ul>
+            <form class="rs-demo-form" id="rsDemoForm">
+              <label class="rs-sr-only" for="rsDemoName">Ingredient name</label>
+              <input type="text" id="rsDemoName" placeholder="Add an ingredient, e.g. Paneer" autocomplete="off">
+              <label class="rs-sr-only" for="rsDemoStatus">Status</label>
+              <select id="rsDemoStatus">
+                <option value="fresh">Fresh</option>
+                <option value="use_soon">Use soon</option>
+                <option value="expired">Expired</option>
+              </select>
+              <button type="submit" class="rs-btn">Add</button>
+              <button type="button" class="rs-btn rs-btn-ghost" id="rsDemoReset">Reset demo</button>
+              <button type="button" class="rs-btn rs-btn-ghost" id="rsDemoClear">Empty pantry</button>
+            </form>
+          </details>
 
         </div>
 
@@ -179,8 +227,42 @@
     </div>
   </div>
 
+  <!-- Recipe details dialog (filled by recipes.js) -->
+  <div class="rs-modal" id="rsModal" hidden>
+    <div class="rs-modal-panel" id="rsModalPanel" role="dialog" aria-modal="true" aria-labelledby="rsModalTitle">
+      <div class="rs-modal-head">
+        <span class="rs-modal-emoji" id="rsModalEmoji" aria-hidden="true"></span>
+        <div class="rs-modal-titles">
+          <h3 class="rs-modal-title" id="rsModalTitle"></h3>
+          <ul class="rs-meta rs-modal-meta" id="rsModalMeta"></ul>
+        </div>
+        <button type="button" class="rs-modal-close" id="rsModalClose" aria-label="Close recipe">&times;</button>
+      </div>
+      <div class="rs-modal-body">
+        <p class="rs-modal-note" id="rsModalNote" hidden></p>
+        <div>
+          <h4>Ingredients</h4>
+          <ul class="rs-ing-list" id="rsModalIngredients"></ul>
+        </div>
+        <div>
+          <h4>Method</h4>
+          <ol class="rs-steps" id="rsModalSteps"></ol>
+        </div>
+      </div>
+      <div class="rs-modal-foot">
+        <button type="button" class="rs-btn rs-btn-ghost" id="rsModalCloseFoot">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Notification Toast Container -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Recipe Suggestions module (order matters) -->
+  <script src="recipe-data.js"></script>
+  <script src="recipe-inventory-adapter.js"></script>
+  <script src="recipe-engine.js"></script>
+  <script src="recipes.js"></script>
 
   <!-- Shared Application Script -->
   <script src="app.js"></script>
