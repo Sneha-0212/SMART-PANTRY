@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Refrigerator Monitoring | SMART PANTRY</title>
+  <link rel="stylesheet" href="css/refrigerator_monitoring.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- ===== Header: branding + back button ===== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <svg class="brand-logo" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20 4C11 4 5 9 5 16c0 1.2.2 2.2.6 3.1C6.6 15 9.5 11.8 14 10c-3.5 2.5-5.6 5.5-6.5 9.6 1.5.7 3.1 1.1 4.8 1.1C18 20.7 20 14 20 4z" fill="currentColor"/>
+        </svg>
+        <span class="brand-name">SMART PANTRY</span>
+      </div>
+      <!-- Edit this link if your main dashboard file has a different name or location. -->
+      <a id="backToDashboard" class="btn btn-secondary" href="../index.html">&larr; Back to dashboard</a>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+
+    <div class="page-title">
+      <h1>Refrigerator Monitoring</h1>
+      <p class="last-updated">Last updated: <time id="lastUpdated" datetime="">No readings yet</time></p>
+    </div>
+
+    <!-- ===== Honesty banner (always visible) ===== -->
+    <div class="sim-banner" role="status">
+      <strong class="sim-banner-text">SIMULATED DATA — NO REAL SENSOR CONNECTED</strong>
+      <span id="simIndicator" class="sim-pill sim-pill-stopped">SIMULATION: starting</span>
+    </div>
+
+    <p id="storageNotice" class="notice notice-warning" hidden>
+      Browser storage is unavailable or full. The page still works, but settings and history will not be kept after you refresh.
+    </p>
+
+    <!-- Screen-reader-only announcements for new alerts -->
+    <p id="alertAnnouncer" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <!-- ===== Summary cards ===== -->
+    <section class="summary-grid" aria-label="Current readings and simulator">
+
+      <article id="tempCard" class="card metric-card" aria-labelledby="tempTitle">
+        <h2 id="tempTitle" class="card-title">Temperature</h2>
+        <p class="metric-value"><span id="tempValue">--</span><span class="metric-unit">°C</span></p>
+        <p class="metric-status">
+          <span id="tempBadge" class="badge badge-unknown">No data</span>
+          <span id="tempDetail" class="metric-detail"></span>
+        </p>
+        <p class="metric-limits">Normal range: <span id="tempLimits">--</span></p>
+        <p class="hint">Demo thresholds you can change below. They are not food-safety standards.</p>
+      </article>
+
+      <article id="humidityCard" class="card metric-card" aria-labelledby="humidityTitle">
+        <h2 id="humidityTitle" class="card-title">Humidity</h2>
+        <p class="metric-value"><span id="humidityValue">--</span><span class="metric-unit">%</span></p>
+        <p class="metric-status">
+          <span id="humidityBadge" class="badge badge-unknown">No data</span>
+          <span id="humidityDetail" class="metric-detail"></span>
+        </p>
+        <p class="metric-limits">Normal range: <span id="humidityLimits">--</span></p>
+        <p class="hint">The ideal humidity depends on your fridge and the food stored in it. These limits are demo values only.</p>
+      </article>
+
+      <article class="card" aria-labelledby="simTitle">
+        <h2 id="simTitle" class="card-title">Simulator</h2>
+        <p class="hint">Readings are made up by this page every few seconds. Use the tools below to test alerts.</p>
+        <div class="button-row">
+          <button id="startSimBtn" class="btn btn-primary" type="button">Start simulation</button>
+          <button id="stopSimBtn" class="btn btn-secondary" type="button">Stop simulation</button>
+        </div>
+        <p id="simNote" class="hint" role="status"></p>
+
+        <form id="injectForm" class="inject-form" novalidate>
+          <h3 class="subheading">Inject a test reading</h3>
+          <div class="field-row">
+            <div class="field">
+              <label for="injectTemp">Temperature (°C)</label>
+              <input id="injectTemp" name="injectTemp" type="number" step="0.1" inputmode="decimal" value="4" aria-describedby="injectMessage">
+            </div>
+            <div class="field">
+              <label for="injectHumidity">Humidity (%)</label>
+              <input id="injectHumidity" name="injectHumidity" type="number" step="0.1" inputmode="decimal" value="50" aria-describedby="injectMessage">
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit">Inject reading</button>
+          <p id="injectMessage" class="form-message" role="status"></p>
+
+          <div class="preset-row" role="group" aria-label="Quick test readings (made for the default thresholds)">
+            <button class="btn btn-small btn-secondary preset-btn" type="button" data-temp="4" data-humidity="50">Normal</button>
+            <button class="btn btn-small btn-secondary preset-btn" type="button" data-temp="7" data-humidity="50">Above max temp</button>
+            <button class="btn btn-small btn-secondary preset-btn" type="button" data-temp="0" data-humidity="50">Below min temp</button>
+            <button class="btn btn-small btn-secondary preset-btn" type="button" data-temp="4" data-humidity="75">High humidity</button>
+            <button class="btn btn-small btn-secondary preset-btn" type="button" data-temp="12" data-humidity="95">Critical</button>
+          </div>
+        </form>
+      </article>
+    </section>
+
+    <!-- ===== Charts + alerts ===== -->
+    <div class="two-column">
+      <section class="card" aria-labelledby="chartsTitle">
+        <div class="card-head">
+          <h2 id="chartsTitle" class="card-title">History charts</h2>
+          <span class="hint">Last 30 simulated readings</span>
+        </div>
+
+        <p id="chartsUnavailable" class="notice notice-warning" hidden>
+          Charts could not load because Chart.js is missing. Check your internet connection or see the README for using a local copy. The table below still works.
+        </p>
+        <p id="chartsEmpty" class="empty-state">No readings yet. Start the simulation or inject a test reading to see the charts.</p>
+
+        <div id="chartsArea">
+          <h3 class="subheading">Temperature (°C)</h3>
+          <div class="chart-box">
+            <canvas id="tempChart" role="img" aria-label="Line chart of recent simulated temperature readings with the minimum and maximum limits"></canvas>
+          </div>
+          <h3 class="subheading">Humidity (%)</h3>
+          <div class="chart-box">
+            <canvas id="humidityChart" role="img" aria-label="Line chart of recent simulated humidity readings with the minimum and maximum limits"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="alertsTitle">
+        <div class="card-head">
+          <h2 id="alertsTitle" class="card-title">Alerts</h2>
+          <button id="clearAlertLogBtn" class="btn btn-small btn-secondary" type="button">Clear alert log</button>
+        </div>
+
+        <h3 class="subheading">Active alerts</h3>
+        <ul id="activeAlerts" class="alert-list"></ul>
+
+        <h3 class="subheading">Recent alert log</h3>
+        <ul id="alertLog" class="alert-list"></ul>
+      </section>
+    </div>
+
+    <!-- ===== Readings table ===== -->
+    <section class="card" aria-labelledby="tableTitle">
+      <div class="card-head">
+        <h2 id="tableTitle" class="card-title">Recent readings</h2>
+        <button id="clearHistoryBtn" class="btn btn-small btn-secondary" type="button">Clear history</button>
+      </div>
+      <p id="historyEmpty" class="empty-state">No readings yet. They will appear here as soon as the simulation runs.</p>
+      <div id="tableWrap" class="table-wrap" hidden>
+        <table class="readings-table">
+          <caption class="visually-hidden">Most recent simulated readings, newest first</caption>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Temperature (°C)</th>
+              <th scope="col">Humidity (%)</th>
+              <th scope="col">Status</th>
+              <th scope="col">Source</th>
+            </tr>
+          </thead>
+          <tbody id="readingsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== Inventory insights + settings ===== -->
+    <div class="two-column">
+      <section class="card" aria-labelledby="inventoryTitle">
+        <h2 id="inventoryTitle" class="card-title">Inventory insights</h2>
+        <p id="inventorySource" class="source-tag"></p>
+        <p id="inventoryMessage" class="notice notice-info" hidden></p>
+
+        <div class="count-grid">
+          <div class="count-box count-box-soon">
+            <p class="count-number" id="useSoonCount">0</p>
+            <p class="count-label">Use Soon</p>
+            <ul id="useSoonNames" class="name-list"></ul>
+          </div>
+          <div class="count-box count-box-check">
+            <p class="count-number" id="checkNowCount">0</p>
+            <p class="count-label">Check Now</p>
+            <ul id="checkNowNames" class="name-list"></ul>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <!-- Edit these links to match your teammates' real file names. -->
+          <a id="foodManagementLink" class="btn btn-primary" href="../food_management.html">Open Food Management</a>
+          <a id="recipeSuggestionsLink" class="btn btn-primary" href="../recipe_suggestions.html">Open Recipe Suggestions</a>
+          <button id="refreshInventoryBtn" class="btn btn-secondary" type="button">Refresh inventory</button>
+        </div>
+        <p class="hint">The two links open your teammates' pages. They work once those pages are in the project.</p>
+      </section>
+
+      <section class="card" aria-labelledby="settingsTitle">
+        <h2 id="settingsTitle" class="card-title">Settings</h2>
+        <p class="hint">These are configurable demo values, not food-safety standards. "Critical margin" is how far past a limit a reading must be to count as Critical.</p>
+
+        <form id="settingsForm" novalidate>
+          <fieldset class="settings-group">
+            <legend>Temperature</legend>
+            <div class="field-row">
+              <div class="field">
+                <label for="tempMin">Minimum (°C)</label>
+                <input id="tempMin" name="tempMin" type="number" step="0.1" inputmode="decimal" aria-describedby="tempMin-error">
+                <p id="tempMin-error" class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="tempMax">Maximum (°C)</label>
+                <input id="tempMax" name="tempMax" type="number" step="0.1" inputmode="decimal" aria-describedby="tempMax-error">
+                <p id="tempMax-error" class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="tempCriticalMargin">Critical margin (°C)</label>
+                <input id="tempCriticalMargin" name="tempCriticalMargin" type="number" step="0.1" inputmode="decimal" aria-describedby="tempCriticalMargin-error">
+                <p id="tempCriticalMargin-error" class="field-error" aria-live="polite"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend>Humidity</legend>
+            <div class="field-row">
+              <div class="field">
+                <label for="humidityMin">Minimum (%)</label>
+                <input id="humidityMin" name="humidityMin" type="number" step="0.1" inputmode="decimal" aria-describedby="humidityMin-error">
+                <p id="humidityMin-error" class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="humidityMax">Maximum (%)</label>
+                <input id="humidityMax" name="humidityMax" type="number" step="0.1" inputmode="decimal" aria-describedby="humidityMax-error">
+                <p id="humidityMax-error" class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="humidityCriticalMargin">Critical margin (%)</label>
+                <input id="humidityCriticalMargin" name="humidityCriticalMargin" type="number" step="0.1" inputmode="decimal" aria-describedby="humidityCriticalMargin-error">
+                <p id="humidityCriticalMargin-error" class="field-error" aria-live="polite"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="button-row">
+            <button class="btn btn-primary" type="submit">Save settings</button>
+            <button id="restoreDefaultsBtn" class="btn btn-secondary" type="button">Restore defaults</button>
+          </div>
+          <p id="settingsMessage" class="form-message" role="status"></p>
+        </form>
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>SMART PANTRY · Member 6 · Refrigerator Monitoring. All readings on this page are simulated.</p>
+    </div>
+  </footer>
+
+  <!-- Chart.js (pinned version) from a CDN. See README to use a local copy instead. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Order matters: logic and helpers first, screen code last. -->
+  <script src="js/monitor_logic.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/inventory_adapter.js"></script>
+  <script src="js/refrigerator_monitoring.js"></script>
+</body>
+</html>
